@@ -6,7 +6,7 @@ module.exports = {
 	modDate: (absFilePath) => {
 		fs.readFile(absFilePath, (err, data) => {
 
-			if (err) { console.error(`error reading file ${absoluteFilepath} :\n`, error); throw err; }
+			if (err) { console.error(`error reading file ${absFilePath} :\n`, err); throw err; }
 		
 			const json = parser.toJson(data);
 			console.log('to json ->', json);
