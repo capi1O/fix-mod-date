@@ -1,0 +1,17 @@
+{
+  "name": "fix-mod-date",
+  "version": "1.0.0",
+  "bin": "./index.js",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "utimes": "^4.0.2",
+    "xml2json": "^0.12.0"
+  }
+}
