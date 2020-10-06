@@ -29,7 +29,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 	}
 	if (verbose || test) console.log(`file ${absFilePath} timestamp is '${timestamp}'`);
 	if (!test && timestamp) {
-		utimes(absFilePath, { mtime: timestamp });
+		await utimes(absFilePath, { mtime: timestamp });
 		if (!quiet) console.log(`modified ${absFilePath} timestamp => '${timestamp}'`);
 	}
 };
