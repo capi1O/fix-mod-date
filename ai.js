@@ -2,7 +2,7 @@
 const fs	= require('fs').promises;
 
 
-const timestamp = async (absFilePath, verbose) => {
+const mtime = async (absFilePath, verbose) => {
 
 	try {
 		const data = await fs.readFile(absFilePath, 'utf8');
@@ -24,4 +24,4 @@ const timestamp = async (absFilePath, verbose) => {
 	}
 }
 
-module.exports = { timestamp };
+module.exports = { mtime };

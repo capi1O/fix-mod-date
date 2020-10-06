@@ -12,8 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "utimes": "^4.0.2",
-    "xml2json": "^0.12.0"
+    "utimes": "^4.0.2"
   },
   "devDependencies": {
     "eslint": "^7.10.0"

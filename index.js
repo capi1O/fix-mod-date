@@ -4,7 +4,6 @@ const parseArgs		= require('minimist');
 const path				= require('path');
 const fs					= require('fs').promises;
 const ai					= require('./ai');
-const xml					= require('./xml');
 const { utimes }	= require('utimes');
 
 
@@ -15,12 +14,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 	switch (extension) {
 		case '.ai':
 			if (verbose) console.log(`processing Illustrator file ${absFilePath}`);
-			timestamp = await ai.timestamp(absFilePath, verbose);
-			break;
-
-		case '.xml':
-			if (verbose) console.log(`processing XML file ${absFilePath}`);
-			timestamp = xml.timestamp(absFilePath)
+			timestamp = await ai.mtime(absFilePath, verbose);
 			break;
 
 		default:

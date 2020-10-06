@@ -30,4 +30,3 @@ Node.JS >= 10
 # supported file types
 
 - `ai` (Adobe Illustrator)
-- `xml` (XML files) => WIP
