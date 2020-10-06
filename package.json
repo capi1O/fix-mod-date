@@ -1,7 +1,7 @@
 {
   "name": "fix-mod-date",
   "version": "1.0.0",
-  "bin": "./index.js",
+  "bin": "--no-warnings ./index.js",
   "description": "",
   "main": "index.js",
   "scripts": {

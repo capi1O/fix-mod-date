@@ -1,4 +1,4 @@
-const fs			= require('fs');
+const fs			= require('fs').promises;
 const parser	= require('xml2json');
 
 module.exports = {

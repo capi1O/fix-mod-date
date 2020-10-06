@@ -1,38 +1,85 @@
 #!/usr/bin/env node
 
+const parseArgs		= require('minimist');
 const path				= require('path');
+const fs					= require('fs').promises;
 const ai					= require('./ai');
 const xml					= require('./xml');
 const { utimes }	= require('utimes');
 
-const filename = process.argv.length >= 3 ? process.argv[2] : false;
 
-if (!filename) { console.error('filename argument required'); process.exit(1); }
-if (typeof filename !== 'string' && !(filename instanceof String)) { console.error('invalid filename'); process.exit(1); }
+const processFile = async (absFilePath, verbose, test, quiet) => {
+	const extension = path.extname(absFilePath);
 
-const absoluteFilepath = path.resolve(process.cwd(), filename);
-console.log(absoluteFilepath);
-
-const extension = path.extname(absoluteFilepath);
-
-(async function() {
 	let timestamp;
 	switch (extension) {
 		case '.ai':
-			console.log(`parsing Illustrator file ${absoluteFilepath}`);
-			timestamp = await ai.timestamp(absoluteFilepath);
+			if (verbose) console.log(`processing Illustrator file ${absFilePath}`);
+			timestamp = await ai.timestamp(absFilePath, verbose);
 			break;
 
 		case '.xml':
-			console.log(`parsing XML file ${absoluteFilepath}`);
-			timestamp = xml.timestamp(absoluteFilepath)
+			if (verbose) console.log(`processing XML file ${absFilePath}`);
+			timestamp = xml.timestamp(absFilePath)
 			break;
 
 		default:
-			console.error(`unsupported file type ${absoluteFilepath}`);
+			console.error(`unsupported file type ${absFilePath}`);
 			break;
 	}
-	console.log(timestamp);
-	if (timestamp) utimes(absoluteFilepath, { mtime: timestamp });
+	if (verbose || test) console.log(`file ${absFilePath} timestamp is '${timestamp}'`);
+	if (!test && timestamp) {
+		utimes(absFilePath, { mtime: timestamp });
+		if (!quiet) console.log(`modified ${absFilePath} timestamp => '${timestamp}'`);
+	}
+};
+
+
+const processPaths = async (directory, names, recurseLevel, maxRecurseLevel, verbose, test, quiet) => {
+
+	if (verbose) console.log(`processing [${names.join(',')}]`);
+
+	for (const name of names) {
+		try {
+			// 0. get absolute path
+			const absolutePath = path.resolve(directory, name);
+			if (verbose) console.log(absolutePath);
+			// 1. check if argument is correct
+			if (typeof absolutePath !== 'string' && !(absolutePath instanceof String)) { console.error('invalid path'); process.exit(1); }
+			// 2. process file or directory
+			const stat = await fs.lstat(absolutePath);
+			if (stat.isDirectory()) {
+				if (recurseLevel < maxRecurseLevel) {
+					const subNames = await fs.readdir(absolutePath);
+					await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, verbose, test, quiet);
+				}
+				else if (verbose) console.log(`maximum recurse level '${maxRecurseLevel}' reached`);
+			}
+			else await processFile(absolutePath, verbose, test, quiet);
+		}
+		catch (error) {
+			console.error(`error processing ${name} :\n`, error);
+		}
+	}
+}
+
+// 0. Parse Arguments
+const argsOptions = {
+	boolean: ['v', 'verbose', 't', 'test', 'q', 'quiet', 'version']
+};
+const { _: names, ...args } = parseArgs(process.argv.slice(2), argsOptions);
+
+if (args.version) console.log('v1.0.0');
+
+const maxRecurseLevel = args.r || args.recursive ||1;
+const verbose = args.v || args.verbose || false;
+const test = args.t || args.test || false;
+const quiet = args.q || args.quiet || false;
+
+if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
+
+(async function() {
+	await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, quiet);
+
 	process.exit(0);
 }());

@@ -4,13 +4,28 @@
 
 It can happen that the modification date of a file is incorrect for various reasons, ex. if a file has been copied without preserving modification dates, such as when it is moved from one filesystem to another.
 
+# compatibilty
+
+Node.JS >= 10
+
+*Note: run `export NODE_NO_WARNINGS=1` before `fix-mod-date` to avoid fs.promises API ExperimentalWarning on Node 10.x.*
+
 # install
 
-`npm link`
+1. `git clone https://github.com/didrip/fix-mod-date && cd fix-mod-date`
+2. `npm link`
 
 # use
 
-`fix-mod-date /some/file.ai`
+`fix-mod-date /some/file.ai /some/other/file.ai /some/directory`
+
+## options
+
+- `--version`: outputs version
+- `t` or `--test`: test mode. date will not be modified. default = `false`.
+- `v` or `--verbose`: verbose logging. default = `false`.
+- `q` or `--quiet`: no output at all. default = `false`.
+- `r` or `--recursive`: recursive level for processing directories. default = `1`;
 
 # supported file types
 

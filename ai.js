@@ -1,19 +1,17 @@
-const fs			= require('fs');
-const util		= require('util');
+// search for <xmp:ModifyDate>
+const fs	= require('fs').promises;
 
-const readFile = util.promisify(fs.readFile);
 
-const timestamp = async (absFilePath) => {
+const timestamp = async (absFilePath, verbose) => {
 
 	try {
-		const data = await readFile(absFilePath, 'utf8');
-		// search for <xmp:ModifyDate>
+		const data = await fs.readFile(absFilePath, 'utf8');
 		let timestamp = null;
 		const match = data.match(/<xmp:ModifyDate>(.*)<\/xmp:ModifyDate>/m);
 		if (match === null) console.error(`could not find <xmp:ModifyDate> in ${absFilePath}`);
 		else {
 			const dateString = match[1]; // format 2018-05-22T11:00:15+02:00 (ISO8601)
-			console.log(dateString);
+			if (verbose) console.log(`date from ${absFilePath} is '${dateString}'`);
 			const date = new Date(dateString);
 			timestamp = date.getTime();
 		}
