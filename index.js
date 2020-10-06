@@ -65,17 +65,14 @@ const processPaths = async (directory, names, recurseLevel, maxRecurseLevel, ver
 
 // 0. Parse Arguments
 const argsOptions = {
-	boolean: ['v', 'verbose', 't', 'test', 'q', 'quiet', 'version']
+	boolean: ['v', 't', 'q', 'version'],
+	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level' },
+	default: { r: 1, v: false, t: false, q: false }
 };
 const { _: names, ...args } = parseArgs(process.argv.slice(2), argsOptions);
+const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version } = args;
 
-if (args.version) console.log('v1.0.0');
-
-const maxRecurseLevel = args.r || args.recursive ||1;
-const verbose = args.v || args.verbose || false;
-const test = args.t || args.test || false;
-const quiet = args.q || args.quiet || false;
-
+if (version) console.log('v1.0.0');
 if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
 
 (async function() {
