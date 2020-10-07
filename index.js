@@ -4,6 +4,7 @@ const parseArgs		= require('minimist');
 const path				= require('path');
 const fs					= require('fs').promises;
 const ai					= require('./ai');
+const exif				= require('./exif');
 const { utimes }	= require('utimes');
 
 
@@ -11,21 +12,35 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 	const extension = path.extname(absFilePath);
 
 	let timestamp;
-	switch (extension) {
+	switch (extension.toLowerCase()) {
 		case '.ai':
 			if (verbose) console.log(`processing Illustrator file ${absFilePath}`);
 			timestamp = await ai.mtime(absFilePath, verbose);
+			break;
+
+		case '.jpeg':
+		case '.jpg':
+		case '.tiff':
+		case '.heic':
+		case '.heif':
+		case '.webp':
+			if (verbose) console.log(`processing image file ${absFilePath}`);
+			timestamp = await exif.mtime(absFilePath, verbose);
 			break;
 
 		default:
 			console.error(`unsupported file type ${absFilePath}`);
 			break;
 	}
-	if (verbose || test) console.log(`file ${absFilePath} timestamp is '${timestamp}'`);
-	if (!test && timestamp) {
-		await utimes(absFilePath, { mtime: timestamp });
-		if (!quiet) console.log(`modified ${absFilePath} timestamp => '${timestamp}'`);
+	if (!timestamp) console.log(`could not find date for file ${absFilePath}`);
+	else {
+		if (verbose || test) console.log(`file ${absFilePath} timestamp is '${timestamp}'`);
+		if (!test) {
+			await utimes(absFilePath, { mtime: timestamp });
+			if (!quiet) console.log(`modified ${absFilePath} timestamp => '${timestamp}'`);
+		}
 	}
+
 };
 
 
