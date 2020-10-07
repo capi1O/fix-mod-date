@@ -3,7 +3,7 @@
 const parseArgs		= require('minimist');
 const path				= require('path');
 const fs					= require('fs').promises;
-const ai					= require('./ai');
+const xmp					= require('./adobe-xmp');
 const exif				= require('./exif');
 const { utimes }	= require('utimes');
 
@@ -14,8 +14,9 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 	let timestamp;
 	switch (extension.toLowerCase()) {
 		case '.ai':
+		case '.pdf':
 			if (verbose) console.log(`processing Illustrator file ${absFilePath}`);
-			timestamp = await ai.mtime(absFilePath, verbose);
+			timestamp = await xmp.mtime(absFilePath, verbose);
 			break;
 
 		case '.jpeg':
