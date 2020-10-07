@@ -15,7 +15,9 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 	switch (extension.toLowerCase()) {
 		case '.ai':
 		case '.pdf':
-			if (verbose) console.log(`processing Illustrator file ${absFilePath}`);
+		case '.aep':
+		case '.psd':
+			if (verbose) console.log(`processing Adobe XMP file ${absFilePath}`);
 			timestamp = await xmp.mtime(absFilePath, verbose);
 			break;
 
