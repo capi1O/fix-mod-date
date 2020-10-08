@@ -2,23 +2,34 @@
 
 const parseArgs		= require('minimist');
 const path				= require('path');
-const fs					= require('fs').promises;
+const fs					= require('fs');
 const xmp					= require('./adobe-xmp');
 const exif				= require('./exif');
+const zxmp				= require('./zip-adobe-xmp');
 const { utimes }	= require('utimes');
 
 
 const processFile = async (absFilePath, verbose, test, quiet) => {
-	const extension = path.extname(absFilePath);
+	const extension = path.extname(absFilePath).toLowerCase();
 
+	// 0. check if path exists
+	if (!fs.existsSync(absFilePath)) {
+		console.error(`no file at path ${absFilePath}`);
+		return null;
+	}
+
+	// 1. read file
+	const data = await fs.promises.readFile(absFilePath);
+
+	// 2. process file based on file extension
 	let timestamp;
-	switch (extension.toLowerCase()) {
+	switch (extension) {
 		case '.ai':
 		case '.pdf':
 		case '.aep':
 		case '.psd':
 			if (verbose) console.log(`processing Adobe XMP file ${absFilePath}`);
-			timestamp = await xmp.mtime(absFilePath, verbose);
+			timestamp = await xmp.mtime(data.toString('utf8'), verbose, absFilePath);
 			break;
 
 		case '.jpeg':
@@ -28,7 +39,12 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 		case '.heif':
 		case '.webp':
 			if (verbose) console.log(`processing image file ${absFilePath}`);
-			timestamp = await exif.mtime(absFilePath, verbose);
+			timestamp = await exif.mtime(data.toString('utf8'), verbose, absFilePath);
+			break;
+
+		case '.prproj':
+			if (verbose) console.log(`processing compressed Adobe XMP file ${absFilePath}`);
+			timestamp = await zxmp.mtime(data, verbose, absFilePath);
 			break;
 
 		default:
@@ -43,7 +59,6 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 			if (!quiet) console.log(`modified ${absFilePath} timestamp => '${timestamp}'`);
 		}
 	}
-
 };
 
 
@@ -59,10 +74,10 @@ const processPaths = async (directory, names, recurseLevel, maxRecurseLevel, ver
 			// 1. check if argument is correct
 			if (typeof absolutePath !== 'string' && !(absolutePath instanceof String)) { console.error('invalid path'); process.exit(1); }
 			// 2. process file or directory
-			const stat = await fs.lstat(absolutePath);
+			const stat = await fs.promises.lstat(absolutePath);
 			if (stat.isDirectory()) {
 				if (recurseLevel < maxRecurseLevel) {
-					const subNames = await fs.readdir(absolutePath);
+					const subNames = await fs.promises.readdir(absolutePath);
 					await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, verbose, test, quiet);
 				}
 				else if (verbose) console.log(`maximum recurse level '${maxRecurseLevel}' reached`);

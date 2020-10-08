@@ -1,11 +1,9 @@
 // search for <xmp:ModifyDate>
-const fs	= require('fs').promises;
 
 
-const mtime = async (absFilePath, verbose) => {
+const mtime = async (data, verbose, absFilePath) => {
 
 	try {
-		const data = await fs.readFile(absFilePath, 'utf8');
 		let timestamp = null;
 		const match = data.match(/<xmp:ModifyDate>(.*)<\/xmp:ModifyDate>/m);
 		if (match === null) console.error(`could not find <xmp:ModifyDate> in ${absFilePath}`);

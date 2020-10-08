@@ -1,5 +1,4 @@
 // use EXIF data. support JPEG, TIFF, PNG, HEIC/HEIF, WebP
-const fs					= require('fs').promises;
 const ExifReader 	= require('exifreader');
 
 // order matters
@@ -14,10 +13,9 @@ const exifDateKeys = [
 	// 'ICC Profile Date'
 ];
 
-const mtime = async (absFilePath, verbose) => {
+const mtime = async (data, verbose, absFilePath) => {
 
 	try {
-		const data = await fs.readFile(absFilePath);
 		let timestamp = null;
 
 		const tags = ExifReader.load(data); //, {expanded: true});
@@ -29,7 +27,7 @@ const mtime = async (absFilePath, verbose) => {
 		try {
 			exifDateKeys.forEach(exifDateKey => {
 				if (exifDateKey in tags) {
-					if (verbose) console.log(`found EXIF date ${exifDateKey} for ${absFilePath}`);
+					if (verbose) console.log(`found EXIF date ${exifDateKey}`);
 					const dateString = tags[exifDateKey].description;
 					if (dateString === null) console.error(`could not find EXIF date in ${absFilePath}`);
 					else {
