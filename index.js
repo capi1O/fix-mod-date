@@ -28,6 +28,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 		case '.pdf':
 		case '.aep':
 		case '.psd':
+		case '.eps':
 			if (verbose) console.log(`processing Adobe XMP file ${absFilePath}`);
 			timestamp = await xmp.mtime(data.toString('utf8'), verbose, absFilePath);
 			break;
