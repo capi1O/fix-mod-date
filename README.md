@@ -30,3 +30,13 @@ Node.JS >= 10
 # supported file types
 
 - `ai` (Adobe Illustrator)
+- `psd` (Adobe Photoshop)
+- `eps` (Encapsulated Postscript)
+- `aep` (Adobe After Effects project)
+- `jpg/jpeg` *needs EXIF data*
+- `tiff` *needs EXIF data*
+- `heic` *needs EXIF data*
+- `heif` *needs EXIF data*
+- `webp` *needs EXIF data*
+- `mp4/mpg4` (MPEG-4 Part 14)
+- `m4a` (MPEG-4 Part 14 Audio)

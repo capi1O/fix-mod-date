@@ -6,6 +6,7 @@ const fs					= require('fs');
 const xmp					= require('./adobe-xmp');
 const exif				= require('./exif');
 const zxmp				= require('./zip-adobe-xmp');
+const mp4					= require('./mp4');
 const { utimes }	= require('utimes');
 
 
@@ -19,7 +20,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 	}
 
 	// 1. read file
-	const data = await fs.promises.readFile(absFilePath);
+	const dataBuffer = await fs.promises.readFile(absFilePath);
 
 	// 2. process file based on file extension
 	let timestamp;
@@ -30,7 +31,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 		case '.psd':
 		case '.eps':
 			if (verbose) console.log(`processing Adobe XMP file ${absFilePath}`);
-			timestamp = await xmp.mtime(data.toString('utf8'), verbose, absFilePath);
+			timestamp = await xmp.mtime(dataBuffer.toString('utf8'), verbose, absFilePath);
 			break;
 
 		case '.jpeg':
@@ -40,12 +41,19 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 		case '.heif':
 		case '.webp':
 			if (verbose) console.log(`processing image file ${absFilePath}`);
-			timestamp = await exif.mtime(data.toString('utf8'), verbose, absFilePath);
+			timestamp = await exif.mtime(dataBuffer.toString('utf8'), verbose, absFilePath);
 			break;
 
 		case '.prproj':
 			if (verbose) console.log(`processing compressed Adobe XMP file ${absFilePath}`);
-			timestamp = await zxmp.mtime(data, verbose, absFilePath);
+			timestamp = await zxmp.mtime(dataBuffer, verbose, absFilePath);
+			break;
+
+		case '.mp4':
+		case '.m4a':
+		case '.mpg4':
+			if (verbose) console.log(`processing mp4 file ${absFilePath}`);
+			timestamp = await mp4.mtime(dataBuffer, verbose, absFilePath);
 			break;
 
 		default:
