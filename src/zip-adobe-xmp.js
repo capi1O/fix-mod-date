@@ -1,6 +1,6 @@
 // unzip and search for <MZ.BuildVersion.Modified>
-const zlib	= require('zlib');
-const xmp		= require('./adobe-xmp');
+import zlib from 'zlib';
+import xmp from './adobe-xmp';
 
 /**
  * Retrieves the creation time of zipped Adobe XMP file
@@ -16,7 +16,6 @@ const mtime = async (zippedData, verbose, absFilePath) => {
 
 		// 1. unzip
 		const dataString = zlib.gunzipSync(zippedData).toString('utf8');
-
 
 		// 2. try to get Adobe XMP date
 		timestamp = await xmp.mtime(dataString, verbose, absFilePath);
@@ -45,4 +44,5 @@ const mtime = async (zippedData, verbose, absFilePath) => {
 	}
 };
 
-module.exports = { mtime };
+const zxmp = { mtime }
+export default zxmp;

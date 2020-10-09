@@ -1,5 +1,5 @@
 // use EXIF data. support JPEG, TIFF, PNG, HEIC/HEIF, WebP
-const ExifReader 	= require('exifreader');
+import ExifReader from 'exifreader';
 
 // order matters
 const exifDateKeys = [
@@ -58,4 +58,5 @@ const mtime = async (data, verbose, absFilePath) => {
 	}
 };
 
-module.exports = { mtime };
+const exif = { mtime }
+export default exif;

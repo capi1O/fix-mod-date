@@ -28,4 +28,6 @@ const mtime = async (data, verbose, absFilePath) => {
 	}
 };
 
-module.exports = { mtime };
+const xmp = { mtime }
+export default xmp;
+

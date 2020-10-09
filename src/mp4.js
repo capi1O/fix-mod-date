@@ -75,4 +75,6 @@ const mtime = async (dataBuffer, verbose, absFilePath) => {
 	}
 };
 
-module.exports = { mtime };
+
+const mp4 = { mtime }
+export default mp4;

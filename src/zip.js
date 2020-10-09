@@ -98,4 +98,5 @@ const mtime = async (dataBuffer, verbose, absFilePath) => {
 	}
 };
 
-module.exports = { mtime };
+const zip = { mtime }
+export default zip;

@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-const parseArgs		= require('minimist');
-const path				= require('path');
-const fs					= require('fs');
-const xmp					= require('./adobe-xmp');
-const exif				= require('./exif');
-const zxmp				= require('./zip-adobe-xmp');
-const mp4					= require('./mp4');
-const zip					= require('./zip');
-const { utimes }	= require('utimes');
+import parseArgs from 'minimist';
+import path from 'path';
+import fs from 'fs';
+import xmp from './adobe-xmp';
+import exif from './exif';
+import zxmp from './zip-adobe-xmp';
+import mp4 from './mp4';
+import zip from './zip';
+import { utimes } from 'utimes';
 
 
 const processFile = async (absFilePath, verbose, test, quiet) => {
@@ -94,7 +94,7 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 		try {
 
 			// 0. get absolute path
-			const absolutePath = path.resolve(directory, name);
+			const absolutePath = path.resolve(directoryPath, name);
 			if (verbose) console.log(absolutePath);
 
 			// 1. check if argument is correct
