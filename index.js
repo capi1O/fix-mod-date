@@ -84,7 +84,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 };
 
 
-const processPaths = async (directory, names, recurseLevel, maxRecurseLevel, verbose, test, quiet) => {
+const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel, verbose, test, directory, quiet) => {
 
 	if (verbose) console.log(`processing [${names.join(',')}]`);
 
@@ -92,11 +92,14 @@ const processPaths = async (directory, names, recurseLevel, maxRecurseLevel, ver
 
 	for (const name of names) {
 		try {
+
 			// 0. get absolute path
 			const absolutePath = path.resolve(directory, name);
 			if (verbose) console.log(absolutePath);
+
 			// 1. check if argument is correct
 			if (typeof absolutePath !== 'string' && !(absolutePath instanceof String)) { console.error('invalid path'); process.exit(1); }
+
 			// 2. process file or directory
 			const stat = await fs.promises.lstat(absolutePath);
 			if (stat.isDirectory()) {
@@ -104,15 +107,18 @@ const processPaths = async (directory, names, recurseLevel, maxRecurseLevel, ver
 					const subNames = await fs.promises.readdir(absolutePath);
 					const dirTimestamp = await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, verbose, test, quiet);
 					if (dirTimestamp && dirTimestamp > timestamp) timestamp = dirTimestamp;
-					if (!test) {
-						await utimes(absolutePath, { mtime: dirTimestamp });
-						if (!quiet) console.log(`modified dir ${absolutePath} timestamp => '${dirTimestamp}'`);
+					if (directory) {
+						if (!test) {
+							await utimes(absolutePath, { mtime: dirTimestamp });
+							if (!quiet) console.log(`modified dir ${absolutePath} timestamp => '${dirTimestamp}'`);
+						}
+						else console.log(`dir ${absolutePath} timestamp => '${dirTimestamp}'`);
 					}
 				}
 				else if (verbose) console.log(`maximum recurse level '${maxRecurseLevel}' reached`);
 			}
 			else {
-				const fileTimestamp = await processFile(absolutePath, verbose, test, quiet);
+				const fileTimestamp = await processFile(absolutePath, verbose, test, directory, quiet);
 				if (fileTimestamp && fileTimestamp > timestamp) timestamp = fileTimestamp;
 			}
 		}
@@ -124,20 +130,20 @@ const processPaths = async (directory, names, recurseLevel, maxRecurseLevel, ver
 	return timestamp !== 0 ? timestamp : null;
 }
 
-// 0. Parse Arguments
+// main
 const argsOptions = {
-	boolean: ['v', 't', 'q', 'version'],
-	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level' },
-	default: { r: 1, v: false, t: false, q: false }
+	boolean: ['v', 't', 'q', 'version', 'd'],
+	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level', d: 'directory' },
+	default: { r: 1, v: false, t: false, q: false, d: true }
 };
 const { _: names, ...args } = parseArgs(process.argv.slice(2), argsOptions);
-const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version } = args;
+const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version, d: directory } = args;
 
 if (version) console.log('v1.0.0');
 if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
 
 (async function() {
-	await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, quiet);
+	await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, directory, quiet);
 
 	process.exit(0);
 }());

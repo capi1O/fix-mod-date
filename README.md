@@ -2,7 +2,9 @@
 
 `fix-mod-date` is a CLI tool which fixes the modification date of various file types by reading their contents. Of course it does not work with any file because the date must be saved in the file somehow.
 
-It can happen that the modification date of a file is incorrect for various reasons, ex. if a file has been copied without preserving modification dates, such as when it is moved from one filesystem to another.
+It also fixes directories modification time based the files modification dates it contains.
+
+*It can happen that the modification date of a file is incorrect for various reasons, ex. if a file has been copied without preserving modification dates, such as when it is moved from one filesystem to another.*
 
 # compatibilty
 
@@ -26,6 +28,7 @@ Node.JS >= 10
 - `v` or `--verbose`: verbose logging. default = `false`.
 - `q` or `--quiet`: no output at all. default = `false`.
 - `r` or `--recursive`: recursive level for processing directories. default = `1`;
+- `d` or `--directory`: directory mode. also modify directory time based its files modification date. default = `true`;
 
 # supported file types
 
