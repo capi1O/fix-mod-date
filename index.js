@@ -23,7 +23,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 	// 1. read file
 	const dataBuffer = await fs.promises.readFile(absFilePath);
 
-	// 2. process file based on file extension
+	// 2. get file timestamp
 	let timestamp;
 	switch (extension) {
 		case '.ai':
@@ -66,20 +66,27 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 			console.error(`unsupported file type ${absFilePath}`);
 			break;
 	}
-	if (!timestamp) console.log(`could not find date for file ${absFilePath}`);
-	else {
-		if (verbose || test) console.log(`file ${absFilePath} timestamp is '${timestamp}'`);
-		if (!test) {
-			await utimes(absFilePath, { mtime: timestamp });
-			if (!quiet) console.log(`modified ${absFilePath} timestamp => '${timestamp}'`);
-		}
+	if (!timestamp) {
+		console.log(`could not find date for file ${absFilePath}`);
+		return null;
 	}
+
+	// 3. modify file time
+	if (verbose || test) console.log(`file ${absFilePath} timestamp is '${timestamp}'`);
+	if (!test) {
+		await utimes(absFilePath, { mtime: timestamp });
+		if (!quiet) console.log(`modified file ${absFilePath} timestamp => '${timestamp}'`);
+	}
+
+	return timestamp;
 };
 
 
 const processPaths = async (directory, names, recurseLevel, maxRecurseLevel, verbose, test, quiet) => {
 
 	if (verbose) console.log(`processing [${names.join(',')}]`);
+
+	let timestamp = 0;
 
 	for (const name of names) {
 		try {
@@ -93,16 +100,26 @@ const processPaths = async (directory, names, recurseLevel, maxRecurseLevel, ver
 			if (stat.isDirectory()) {
 				if (recurseLevel < maxRecurseLevel) {
 					const subNames = await fs.promises.readdir(absolutePath);
-					await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, verbose, test, quiet);
+					const dirTimestamp = await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, verbose, test, quiet);
+					if (dirTimestamp && dirTimestamp > timestamp) timestamp = dirTimestamp;
+					if (!test) {
+						await utimes(absolutePath, { mtime: dirTimestamp });
+						if (!quiet) console.log(`modified dir ${absolutePath} timestamp => '${dirTimestamp}'`);
+					}
 				}
 				else if (verbose) console.log(`maximum recurse level '${maxRecurseLevel}' reached`);
 			}
-			else await processFile(absolutePath, verbose, test, quiet);
+			else {
+				const fileTimestamp = await processFile(absolutePath, verbose, test, quiet);
+				if (fileTimestamp && fileTimestamp > timestamp) timestamp = fileTimestamp;
+			}
 		}
 		catch (error) {
 			console.error(`error processing ${name} :\n`, error);
 		}
 	}
+
+	return timestamp !== 0 ? timestamp : null;
 }
 
 // 0. Parse Arguments
