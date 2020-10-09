@@ -25,21 +25,21 @@ const mtime = async (dataBuffer, verbose, absFilePath) => {
 	try {
 		
 		// 0. get mvhd box position in buffer
-		const globalFileIndex = dataBuffer.toString().search(/mvhd/);
-		if (!globalFileIndex) {
+		const mvhdFileIndex = dataBuffer.toString().search(/mvhd/);
+		if (!mvhdFileIndex || mvhdFileIndex === -1) {
 			if (verbose) console.log(`mvhd index not found in file ${absFilePath}.`);
 			return null;
 		}
-		else if (verbose) console.log(`mvhd index found at ${globalFileIndex} in file ${absFilePath}.`);
+		else if (verbose) console.log(`mvhd index found at ${mvhdFileIndex} in file ${absFilePath}.`);
 
 		// 1. read date format version
-		const version = dataBuffer.readInt8(globalFileIndex + mvhdStringLength);
+		const version = dataBuffer.readInt8(mvhdFileIndex + mvhdStringLength);
 
 		// 2. get mvhd box data (skip first 4 bytes and go to
 		const timeLength = version === 0 ? v1TimeLength : v2TimeLength;
 		const timeBuffer = dataBuffer.slice(
-			globalFileIndex + mvhdStringLength,
-			globalFileIndex + mvhdStringLength + versionLength + flagsLength + timeLength
+			mvhdFileIndex + mvhdStringLength,
+			mvhdFileIndex + mvhdStringLength + versionLength + flagsLength + timeLength
 		);
 
 		// 3. read date bytes
@@ -63,6 +63,6 @@ const mtime = async (dataBuffer, verbose, absFilePath) => {
 		// throw err;
 		return null;
 	}
-}
+};
 
 module.exports = { mtime };

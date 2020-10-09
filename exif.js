@@ -49,6 +49,6 @@ const mtime = async (data, verbose, absFilePath) => {
 		// throw err;
 		return null;
 	}
-}
+};
 
 module.exports = { mtime };

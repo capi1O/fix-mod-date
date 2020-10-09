@@ -7,6 +7,7 @@ const xmp					= require('./adobe-xmp');
 const exif				= require('./exif');
 const zxmp				= require('./zip-adobe-xmp');
 const mp4					= require('./mp4');
+const zip					= require('./zip');
 const { utimes }	= require('utimes');
 
 
@@ -54,6 +55,11 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 		case '.mpg4':
 			if (verbose) console.log(`processing mp4 file ${absFilePath}`);
 			timestamp = await mp4.mtime(dataBuffer, verbose, absFilePath);
+			break;
+
+		case '.zip':
+			if (verbose) console.log(`processing zip file ${absFilePath}`);
+			timestamp = await zip.mtime(dataBuffer, verbose, absFilePath);
 			break;
 
 		default:

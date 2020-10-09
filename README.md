@@ -40,3 +40,4 @@ Node.JS >= 10
 - `webp` *needs EXIF data*
 - `mp4/mpg4` (MPEG-4 Part 14)
 - `m4a` (MPEG-4 Part 14 Audio)
+- `zip` (ZIP compressed file)

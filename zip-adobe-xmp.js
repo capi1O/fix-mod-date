@@ -37,6 +37,6 @@ const mtime = async (zippedData, verbose, absFilePath) => {
 		// throw err;
 		return null;
 	}
-}
+};
 
 module.exports = { mtime };
