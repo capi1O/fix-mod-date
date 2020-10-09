@@ -2,7 +2,13 @@
 const zlib	= require('zlib');
 const xmp		= require('./adobe-xmp');
 
-
+/**
+ * Retrieves the creation time of zipped Adobe XMP file
+ * @param {Buffer} data
+ * @param {Bool} verbose
+ * @param {String} absFilePath
+ * @return {(Number | null)} timestamp the creation time or null
+ */
 const mtime = async (zippedData, verbose, absFilePath) => {
 
 	try {

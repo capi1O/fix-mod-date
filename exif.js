@@ -13,6 +13,13 @@ const exifDateKeys = [
 	// 'ICC Profile Date'
 ];
 
+/**
+ * Retrieves the creation time of file with EXIF data
+ * @param {Buffer} data
+ * @param {Bool} verbose
+ * @param {String} absFilePath
+ * @return {(Number | null)} timestamp the creation time or null
+ */
 const mtime = async (data, verbose, absFilePath) => {
 
 	try {

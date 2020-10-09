@@ -59,7 +59,13 @@ const unixMsTimestampFromZipTime = (timebytes, datebytes) => {
 	return new Date(dt_str).getTime();
 };
 
-
+/**
+ * Retrieves the creation time of zip file
+ * @param {Buffer} data
+ * @param {Bool} verbose
+ * @param {String} absFilePath
+ * @return {(Number | null)} timestamp the creation time or null
+ */
 const mtime = async (dataBuffer, verbose, absFilePath) => {
 
 	try {

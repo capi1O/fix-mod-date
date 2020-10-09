@@ -1,6 +1,12 @@
 // search for <xmp:ModifyDate>
 
-
+/**
+ * Retrieves the creation time of Adobe XMP file
+ * @param {Buffer} data
+ * @param {Bool} verbose
+ * @param {String} absFilePath
+ * @return {(Number | null)} timestamp the creation time or null
+ */
 const mtime = async (data, verbose, absFilePath) => {
 
 	try {

@@ -20,6 +20,16 @@ const flagsLength = 3;
 const v1TimeLength = 4;
 const v2TimeLength = 8;
 
+
+/**
+ * Retrieves the creation time of the mp4 video/audio
+ * @param {Buffer} data
+ * @param {Bool} verbose
+ * @param {String} absFilePath
+ * @param options configuration options for the parser
+ * @param options.readFromEnd
+ * @return {(Number | null)} timestamp the creation time or null
+ */
 const mtime = async (dataBuffer, verbose, absFilePath) => {
 
 	try {
