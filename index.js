@@ -66,12 +66,14 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 			console.error(`unsupported file type ${absFilePath}`);
 			break;
 	}
+
+	// 3. fallback to file mod date (file timestamp required for parent dir)
 	if (!timestamp) {
-		console.log(`could not find date for file ${absFilePath}`);
-		return null;
+		console.log(`could not find timestamp for file ${absFilePath}`);
+		return utimes(absFilePath)?.mtime;
 	}
 
-	// 3. modify file time
+	// 4. modify file time
 	if (verbose || test) console.log(`file ${absFilePath} timestamp is '${timestamp}'`);
 	if (!test) {
 		await utimes(absFilePath, { mtime: timestamp });
