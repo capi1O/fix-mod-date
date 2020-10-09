@@ -15,7 +15,8 @@ Node.JS >= 10
 # install
 
 1. `git clone https://github.com/didrip/fix-mod-date && cd fix-mod-date`
-2. `npm link`
+2. `run build`
+3. `npm link`
 
 # use
 

@@ -1,6 +1,6 @@
 // unzip and search for <MZ.BuildVersion.Modified>
 import zlib from 'zlib';
-import xmp from './adobe-xmp';
+import xmp from './adobe-xmp.js';
 
 /**
  * Retrieves the creation time of zipped Adobe XMP file

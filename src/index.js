@@ -1,14 +1,13 @@
-#!/usr/bin/env node
-
 import parseArgs from 'minimist';
 import path from 'path';
 import fs from 'fs';
-import xmp from './adobe-xmp';
-import exif from './exif';
-import zxmp from './zip-adobe-xmp';
-import mp4 from './mp4';
-import zip from './zip';
-import { utimes } from 'utimes';
+import xmp from './adobe-xmp.js';
+import exif from './exif.js';
+import zxmp from './zip-adobe-xmp.js';
+import mp4 from './mp4.js';
+import zip from './zip.js';
+import utimesModule from 'utimes';
+const { utimes } = utimesModule;
 
 
 const processFile = async (absFilePath, verbose, test, quiet) => {
@@ -142,8 +141,6 @@ const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version, d: directory
 if (version) console.log('v1.0.0');
 if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
 
-(async function() {
-	await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, directory, quiet);
+await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, directory, quiet);
 
-	process.exit(0);
-}());
+process.exit(0);
