@@ -1,4 +1,4 @@
-// search for <xmp:ModifyDate>
+// search for <xmp:ModifyDate> or <xap:ModifyDate>
 
 /**
  * Retrieves the creation time of Adobe XMP file
@@ -11,8 +11,8 @@ const mtime = async (data, verbose, absFilePath) => {
 
 	try {
 		let timestamp = null;
-		const match = data.match(/<xmp:ModifyDate>(.*)<\/xmp:ModifyDate>/m);
-		if (match === null) console.error(`could not find <xmp:ModifyDate> in ${absFilePath}`);
+		const match = data.match(/<x[am]p:ModifyDate>(.*)<\/x[am]p:ModifyDate>/m);
+		if (match === null) console.error(`could not find ModifyDate in ${absFilePath}`);
 		else {
 			const dateString = match[1]; // format 2018-05-22T11:00:15+02:00 (ISO8601)
 			if (verbose) console.log(`date from ${absFilePath} is '${dateString}'`);
