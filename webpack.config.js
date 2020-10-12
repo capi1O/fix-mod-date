@@ -1,7 +1,8 @@
-const path = require('path');
-const webpack = require('webpack');
-
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const fs											= require('fs');
+const path										= require('path');
+const { BannerPlugin }				= require('webpack');
+const { CleanWebpackPlugin }	= require('clean-webpack-plugin');
+const PostCompile							= require('post-compile-webpack-plugin')
 
 const config = {
 	target: 'node',
@@ -21,10 +22,8 @@ const config = {
 			cleanStaleWebpackAssets: false,
 			cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, './dist')]
 		}),
-		new webpack.BannerPlugin({
-			banner: '#!/usr/bin/env node',
-			raw: true,
-		})
+		new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
+		new PostCompile(() => fs.chmodSync('dist/index.js', '755'))
 	],
 	module: {
 		rules: [
@@ -37,7 +36,7 @@ const config = {
 				test: /\.node$/,
 				loader: 'node-loader',
 			}
-		],
+		]
 	},
 	experiments: { topLevelAwait: true },
 	resolve: {
