@@ -1,17 +1,19 @@
 // use EXIF data. support JPEG, TIFF, PNG, HEIC/HEIF, WebP
 import ExifReader from 'exifreader';
+import moment from 'moment';
 
-// order matters
-const exifDateKeys = [
-	'ModifyDate',
-	'MetadataDate',
-	// 'CreateDate',
-	'DateTimeOriginal', // The date and time when the original image data was generated.
-	'DateTime', // The date and time of image creation. In Exif standard, it is the date and time the file was changed.
-	'PreviewDateTime', // This tag is an ASCII string containing the name of the date/time at which the preview stored in the IFD was rendered. The date/time is encoded using ISO 8601 format.
-	'DateTimeDigitized', // The date and time when the image was stored as digital data.
-	// 'ICC Profile Date'
-];
+// use a Map because order matters
+const exifDateKeys = new Map();
+
+exifDateKeys.set('ModifyDate', 'YYYY-MM-DDTHH:mm:ssZ');
+exifDateKeys.set('DateTime', 'YYYY:MM:DD HH:mm:ss'); // The date and time of image creation. In Exif standard, it is the date and time the file was changed
+
+// 'DateTimeOriginal': '', // The date and time when the original image data was generated
+// 'PreviewDateTime': '', // This tag is an ASCII string containing the name of the date/time at which the preview stored in the IFD was rendered. The date/time is encoded using ISO 8601 format
+// 'DateTimeDigitized': '', // The date and time when the image was stored as digital data
+// 'ICC Profile Date'
+// 'MetadataDate': '',
+// 'CreateDate: '',
 
 /**
  * Retrieves the creation time of file with EXIF data
@@ -26,21 +28,17 @@ const mtime = async (data, verbose, absFilePath) => {
 		let timestamp = null;
 
 		const tags = ExifReader.load(data); //, {expanded: true});
-		// console.log(tags);
-
 
 		const BreakException = {};
-
 		try {
-			exifDateKeys.forEach(exifDateKey => {
-				if (exifDateKey in tags) {
-					if (verbose) console.log(`found EXIF date ${exifDateKey}`);
-					const dateString = tags[exifDateKey].description;
-					if (dateString === null) console.error(`could not find EXIF date in ${absFilePath}`);
+			exifDateKeys.forEach((exifDateKeyFormat, exifDateKeyName) => {
+				if (exifDateKeyName in tags) {
+					const dateString = tags[exifDateKeyName].description;
+					if (dateString === null) console.error(`could not find EXIF date '${exifDateKeyName}' value in ${absFilePath}`);
 					else {
-						if (verbose) console.log(`EXIF date for ${absFilePath} is '${dateString}'`);
-						const date = new Date(dateString); // 'yyyy:MM:dd HH:mm:ss'
-						timestamp = date.getTime();
+						if (verbose) console.log(`EXIF date '${exifDateKeyName}' for ${absFilePath} is '${dateString}'`);
+						const mom = moment(dateString, exifDateKeyFormat);
+						timestamp = mom.unix() * 1000;
 						throw BreakException; // break the loop
 					}
 				}

@@ -44,6 +44,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 
 		case '.jpeg':
 		case '.jpg':
+		case '.tif':
 		case '.tiff':
 		case '.heic':
 		case '.heif':
