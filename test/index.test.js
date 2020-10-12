@@ -96,12 +96,12 @@ describe('read modification time tests', () => {
 
 describe('update modification time tests', () => {
 
-	it('should modify PDF file time', async () => {
+	it('should update file modification time', async () => {
 
 		const pdfAbsFilePath = path.resolve(process.cwd(), `${filePath}.pdf`);
 
 		// 1. set dummy modification date
-		await utimes(pdfAbsFilePath, { mtime: 1602498298000 }); // utimes(pdfFilePath)?.mtime(1602498298000);
+		await utimes(pdfAbsFilePath, { mtime: 1602498298000 });
 
 		// 2. execute command
 		const res = chaiExec(`${command} -q ${filePath}.pdf`);
@@ -112,6 +112,26 @@ describe('update modification time tests', () => {
 
 		// 4. check result
 		updatedTime.should.be.equal(1408471627000);
+		res.stderr.should.be.empty;
+	});
+
+	
+	it('should not update file modification time', async () => {
+
+		const pdfAbsFilePath = path.resolve(process.cwd(), `${filePath}.pdf`);
+
+		// 1. set dummy modification date
+		await utimes(pdfAbsFilePath, { mtime: 1602498298000 });
+
+		// 2. execute command in test mode
+		const res = chaiExec(`${command} -q -t ${filePath}.pdf`);
+
+		// 3. read the modification date
+		const fileStats = await fs.promises.stat(pdfAbsFilePath);
+		const updatedTime = fileStats.mtimeMs; // fileStats?.mtimeMs;
+
+		// 4. check result
+		updatedTime.should.be.equal(1602498298000);
 		res.stderr.should.be.empty;
 	});
 });
