@@ -1,6 +1,7 @@
 import parseArgs from 'minimist';
 import path from 'path';
 import fs from 'fs';
+import pdf from './pdf.js';
 import xmp from './adobe-xmp.js';
 import exif from './exif.js';
 import zxmp from './zip-adobe-xmp.js';
@@ -25,8 +26,14 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 	// 2. get file timestamp
 	let timestamp;
 	switch (extension) {
-		case '.ai':
 		case '.pdf':
+			if (verbose) console.log(`processing PDF file ${absFilePath}`);
+			timestamp = await pdf.mtime(dataBuffer.toString('utf8'), verbose, absFilePath);
+			// if cannot find timestamp, look for Adobe XMP mod date (in case PDF was made on Indesign for ex).
+			if (!timestamp) timestamp = await xmp.mtime(dataBuffer.toString('utf8'), verbose, absFilePath);
+			break;
+
+		case '.ai':
 		case '.aep':
 		case '.psd':
 		case '.eps':
