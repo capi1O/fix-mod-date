@@ -73,10 +73,11 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 			break;
 	}
 
-	// 3. fallback to file mod date (file timestamp required for parent dir)
+	// 3. fallback to file system modification date (file timestamp required for parent dir)
 	if (!timestamp) {
 		if (verbose) console.log(`could not find timestamp for file ${absFilePath}`);
-		return utimes(absFilePath)?.mtime;
+		const fileStats = await fs.promises.stat(absFilePath);
+		return fileStats?.mtimeMs;
 	}
 
 	// 4. modify file time
