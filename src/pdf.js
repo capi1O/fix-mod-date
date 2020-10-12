@@ -22,7 +22,7 @@ const mtime = async (data, verbose, absFilePath) => {
 			const isoGmtOffset = `${isoGmtOffsetMatch[1]}:${isoGmtOffsetMatch[2]}`;
 			const mom = moment(`${dateString}${isoGmtOffset}`, 'YYYYMMDDHHmmssZ'); // .toDate();
 			// const date = new Date(`${dateString}${isoGmtOffset}`);
-			timestamp = mom.unix();
+			timestamp = mom.unix() * 1000;
 		}
 		return timestamp;
 	}
