@@ -7,7 +7,7 @@
   "scripts": {
     "start:dev": "webpack --mode=development --watch --progress",
     "build": "webpack --mode=production",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "lint": "npx eslint --ext js,jsx ."
   },
   "repository": {
@@ -34,9 +34,12 @@
     "@babel/eslint-parser": "^7.11.5",
     "@babel/plugin-syntax-top-level-await": "^7.10.4",
     "@babel/preset-env": "^7.11.5",
+    "@jsdevtools/chai-exec": "^2.1.1",
     "babel-loader": "^8.1.0",
+    "chai": "^4.2.0",
     "clean-webpack-plugin": "^3.0.0",
     "eslint": "^7.10.0",
+    "mocha": "^8.1.3",
     "node-loader": "^1.0.2",
     "shebang-loader": "0.0.1",
     "webpack": "^5.0.0-rc.4",

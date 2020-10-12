@@ -68,7 +68,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 
 	// 3. fallback to file mod date (file timestamp required for parent dir)
 	if (!timestamp) {
-		console.log(`could not find timestamp for file ${absFilePath}`);
+		if (verbose) console.log(`could not find timestamp for file ${absFilePath}`);
 		return utimes(absFilePath)?.mtime;
 	}
 
@@ -117,7 +117,7 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 				else if (verbose) console.log(`maximum recurse level '${maxRecurseLevel}' reached`);
 			}
 			else {
-				const fileTimestamp = await processFile(absolutePath, verbose, test, directory, quiet);
+				const fileTimestamp = await processFile(absolutePath, verbose, test, onlyFiles, quiet);
 				if (fileTimestamp && fileTimestamp > timestamp) timestamp = fileTimestamp;
 			}
 		}
