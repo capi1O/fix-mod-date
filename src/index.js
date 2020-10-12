@@ -124,7 +124,7 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 				else if (verbose) console.log(`maximum recurse level '${maxRecurseLevel}' reached`);
 			}
 			else {
-				const fileTimestamp = await processFile(absolutePath, verbose, test, onlyFiles, quiet);
+				const fileTimestamp = await processFile(absolutePath, verbose, test, quiet);
 				if (fileTimestamp && fileTimestamp > timestamp) timestamp = fileTimestamp;
 			}
 		}
