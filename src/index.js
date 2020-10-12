@@ -83,7 +83,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 };
 
 
-const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel, verbose, test, directory, quiet) => {
+const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel, verbose, test, onlyFiles, quiet) => {
 
 	if (verbose) console.log(`processing [${names.join(',')}]`);
 
@@ -106,7 +106,7 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 					const subNames = await fs.promises.readdir(absolutePath);
 					const dirTimestamp = await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, verbose, test, quiet);
 					if (dirTimestamp && dirTimestamp > timestamp) timestamp = dirTimestamp;
-					if (directory) {
+					if (!onlyFiles) {
 						if (!test) {
 							await utimes(absolutePath, { mtime: dirTimestamp });
 							if (!quiet) console.log(`modified dir ${absolutePath} timestamp => '${dirTimestamp}'`);
@@ -132,15 +132,15 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 // main
 const argsOptions = {
 	boolean: ['v', 't', 'q', 'version', 'd'],
-	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level', d: 'directory' },
-	default: { r: 1, v: false, t: false, q: false, d: true }
+	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level', f: 'files-only' },
+	default: { r: 1, v: false, t: false, q: false, f: false }
 };
 const { _: names, ...args } = parseArgs(process.argv.slice(2), argsOptions);
-const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version, d: directory } = args;
+const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version, f: onlyFiles } = args;
 
 if (version) console.log('v1.0.0');
 if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
 
-await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, directory, quiet);
+await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, onlyFiles, quiet);
 
 process.exit(0);
