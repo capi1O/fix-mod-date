@@ -71,7 +71,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 			break;
 
 		default:
-			console.error(`unsupported file type ${absFilePath}`);
+			if (!quiet) console.log(`unsupported file type '${extension}' for file ${absFilePath}`);
 			break;
 	}
 

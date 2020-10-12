@@ -80,10 +80,15 @@ describe('read modification time tests', () => {
 		res.stderr.should.be.empty;
 	});
 
-
 	it('should read correct ZIP file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.zip`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.zip timestamp is '1588703262000'\n`);
+		res.stderr.should.be.empty;
+	});
+
+	it('should not support unknown file', () => {
+		const res = chaiExec(`${command} -t ${filePath}.txt`);
+		res.stdout.should.be.equal(`unsupported file type '.txt' for file ${process.cwd()}/test/samples/file.txt\n`);
 		res.stderr.should.be.empty;
 	});
 });
