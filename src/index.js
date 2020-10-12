@@ -49,7 +49,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 		case '.heif':
 		case '.webp':
 			if (verbose) console.log(`processing image file ${absFilePath}`);
-			timestamp = await exif.mtime(dataBuffer.toString('utf8'), verbose, absFilePath);
+			timestamp = await exif.mtime(dataBuffer, verbose, absFilePath);
 			break;
 
 		case '.prproj':
