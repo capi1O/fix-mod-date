@@ -1,15 +1,16 @@
-const chai = require('chai');
-const chaiExec = require('@jsdevtools/chai-exec');
-const fs = require('fs');
-const path = require('path');
-const utimes = require('utimes').utimes;
+const chai				= require('chai');
+const chaiExec		= require('@jsdevtools/chai-exec');
+const fs					= require('fs');
+const path				= require('path');
+const utimes			= require('utimes').utimes;
+const pjson				= require('../package.json');
 
 chai.use(chaiExec);
 chai.use(chai.should);
 
 // const command = 'export NODE_NO_WARNINGS=1 && fix-mod-date';
 const command = 'fix-mod-date';
-const version = '1.0.0';
+const version = pjson.version;
 const pdfFilePath = 'test/samples/file.pdf';
 
 describe('command line arguments tests', () => {

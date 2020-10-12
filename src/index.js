@@ -7,6 +7,7 @@ import exif from './exif.js';
 import zxmp from './zip-adobe-xmp.js';
 import mp4 from './mp4.js';
 import zip from './zip.js';
+import pjson from '../package.json';
 import utimesModule from 'utimes';
 const { utimes } = utimesModule;
 
@@ -146,7 +147,7 @@ const argsOptions = {
 const { _: names, ...args } = parseArgs(process.argv.slice(2), argsOptions);
 const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version, f: onlyFiles } = args;
 
-if (version) console.log('v1.0.0');
+if (version) console.log(`v${pjson.version}`);
 if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
 
 await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, onlyFiles, quiet);

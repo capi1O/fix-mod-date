@@ -5,7 +5,7 @@
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
-    "start:dev": "webpack --mode=development --watch --progress",
+    "dev": "webpack --mode=development --watch --progress",
     "build": "webpack --mode=production",
     "test": "mocha",
     "lint": "npx eslint --ext js,jsx ."
