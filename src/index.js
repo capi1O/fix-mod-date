@@ -152,6 +152,6 @@ const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version } = args;
 if (version) console.log(`v${pjson.version}`);
 if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
 
-await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, quiet);
+if (names.length > 0) await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, quiet);
 
 process.exit(0);
