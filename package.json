@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "webpack --mode=development --watch --progress",
     "build": "webpack --mode=production",
-    "test": "mocha",
+    "test": "mocha --timeout 10000",
     "coverage": "nyc npm run test",
     "lint": "npx eslint --ext js,jsx ."
   },
