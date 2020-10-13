@@ -5,3 +5,5 @@ install:
 before_script:
   - npm run build
   - npm link
+env:
+  - NODE_NO_WARNINGS=1
