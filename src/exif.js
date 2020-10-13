@@ -37,7 +37,9 @@ const mtime = async (data, verbose, absFilePath) => {
 					if (dateString === null) console.error(`could not find EXIF date '${exifDateKeyName}' value in ${absFilePath}`);
 					else {
 						if (verbose) console.log(`EXIF date '${exifDateKeyName}' for ${absFilePath} is '${dateString}'`);
-						const mom = moment(dateString, exifDateKeyFormat);
+						let mom;
+						if (exifDateKeyName === 'DateTime') mom = moment.utc(dateString, exifDateKeyFormat); // no UTC offset is present in DateTime
+						else mom = moment(dateString, exifDateKeyFormat);
 						timestamp = mom.unix() * 1000;
 						throw BreakException; // break the loop
 					}

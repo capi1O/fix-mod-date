@@ -77,7 +77,7 @@ describe('read modification time tests', () => {
 
 	it('should read correct TIFF file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.tiff`);
-		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.tiff timestamp is '1594819792000'\n`);
+		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.tiff timestamp is '1594826992000'\n`);
 		res.stderr.should.be.empty;
 	});
 
