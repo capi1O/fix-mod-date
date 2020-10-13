@@ -62,10 +62,45 @@ Node.JS >= 10
 
 `npm run test`
 
-## toolchain
 
-- [babel](https://github.com/babel/babel) => code transpiler so experimental ES features can be used (ex : [optional chaining operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining))
-- [webpack](https://github.com/webpack/webpack) => live transpiler (to dist) + support additonal option node features such as [top level await](https://v8.dev/features/top-level-await) which is not transpiled (yet) by babel itself.
-- [mocha](https://github.com/mochajs/mocha) => run tests runner.
-- [chai](https://github.com/chaijs/chai) => assertion library + CLI runner wrapper.
-- [eslint](https://github.com/eslint/eslint) => code linter.
+## Dependencies [![Dependency Status](https://david-dm.org/didrip/fix-mod-date.svg?style=flat-square)](https://david-dm.org/didrip/fix-mod-date) 
+
+- [exifreader](https://github.com/mattiasw/ExifReader)
+- [moment](https://github.com/moment/moment)
+- [utimes](https://github.com/baileyherbert/utimes)
+
+
+## toolchain [![devDependencies Status](https://david-dm.org/didrip/fix-mod-date/dev-status.svg?style=flat-square)](https://david-dm.org/didrip/fix-mod-date?type=dev)
+
+<table align="center">
+	<tr>
+		<td align="center">Bundler</td>
+		<td align="center"><img src="https://github.com/webpack/media/blob/master/logo/icon-square-small.svg" height="24" alt="Webpack"></td>
+		<td align="center"><a href="https://github.com/webpack/webpack">Webpack&nbsp;5</a></td>
+		<td align="left">live transpiler (to dist) + support additonal option node features such as <a href="https://v8.dev/features/top-level-await">top level await</a> which is not transpiled (yet) by babel itself.</td>
+	</tr>
+	<tr>
+		<td align="center">Transpiler</td>
+		<td align="center"><img src="https://github.com/babel/logo/blob/master/babel.svg" height="24" alt="Babel"></td>
+		<td align="center"><a href="https://github.com/babel/babel">Babel&nbsp;7</a></td>
+		<td align="left">code transpiler so experimental ES features can be used (ex : <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining">optional chaining operator</a>).</td>
+	</tr>
+	<tr>
+		<td align="center">Test&nbsp;runner</td>
+		<td align="center"><img src="https://camo.githubusercontent.com/af4bf83ab2ca125346740f9961345a24ec43b3a9/68747470733a2f2f636c6475702e636f6d2f78465646784f696f41552e737667" height="24" alt="Mocha"></td>
+		<td align="center"><a href="https://github.com/mochajs/mocha">Mocha&nbsp;8</a></td>
+		<td align="left">describe and organize tests.</td>
+	</tr>
+	<tr>
+		<td align="center">Assertion&nbsp;library</td>
+		<td align="center"><img src="https://camo.githubusercontent.com/431283cc1643d02167aac31067137897507c60fc/687474703a2f2f636861696a732e636f6d2f696d672f636861692d6c6f676f2e706e67" height="24" alt="Chai"></td>
+		<td align="center"><a href="https://github.com/chaijs/chai">Chai&nbsp;4</a></td>
+		<td align="left">CLI runner wrapper.</td>
+	</tr>
+	<tr>
+		<td align="center">Linter</td>
+		<td align="center"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/ESLint_logo.svg/128px-ESLint_logo.svg.png" height="24" alt="ESlint"></td>
+		<td align="center"><a href="https://eslint.org/">ESlint&nbsp;7</a></td>
+			<td align="left">code linter.</td>
+	</tr>
+</table>
