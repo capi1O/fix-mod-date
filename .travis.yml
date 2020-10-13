@@ -5,10 +5,8 @@ install:
 before_script:
   - npm run build
   - npm link
-script:
-  - npm run coverage
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - npm run coverage
 env:
   - NODE_NO_WARNINGS=1
 branches:

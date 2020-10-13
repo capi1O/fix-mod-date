@@ -2,3 +2,4 @@ node_modules
 dist
 /samples
 .nyc_output
+coverage
