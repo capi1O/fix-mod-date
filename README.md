@@ -63,7 +63,7 @@ Node.JS >= 10
 `npm run test`
 
 
-## Dependencies [![Dependency Status](https://david-dm.org/didrip/fix-mod-date.svg?style=flat-square)](https://david-dm.org/didrip/fix-mod-date) 
+## dependencies [![Dependency Status](https://david-dm.org/didrip/fix-mod-date.svg?style=flat-square)](https://david-dm.org/didrip/fix-mod-date) 
 
 - [exifreader](https://github.com/mattiasw/ExifReader)
 - [moment](https://github.com/moment/moment)
@@ -104,3 +104,7 @@ Node.JS >= 10
 			<td align="left">code linter.</td>
 	</tr>
 </table>
+
+# Licence [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
+[MIT](LICENSE)
