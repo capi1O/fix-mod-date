@@ -100,8 +100,14 @@ Node.JS >= 10
 	<tr>
 		<td align="center">Linter</td>
 		<td align="center"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/ESLint_logo.svg/128px-ESLint_logo.svg.png" height="24" alt="ESlint"></td>
-		<td align="center"><a href="https://eslint.org/">ESlint&nbsp;7</a></td>
+		<td align="center"><a href="https://github.com/eslint/eslint">ESlint&nbsp;7</a></td>
 			<td align="left">code linter.</td>
+	</tr>
+	<tr>
+		<td align="center">CI</td>
+		<td align="center"><img src="https://github.com/travis-ci/travis-web/raw/master/public/images/logos/TravisCI-Mascot-1.png" height="24" alt="Travis"></td>
+		<td align="center"><a href="https://github.com/travis-ci/travis-ci">Travis</a></td>
+			<td align="left">continuous integration.</td>
 	</tr>
 </table>
 
