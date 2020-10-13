@@ -14,9 +14,9 @@ Node.JS >= 10
 
 # install
 
-1. `git clone https://github.com/didrip/fix-mod-date && cd fix-mod-date`
-2. `npm run build`
-3. `npm link`
+[available on npm](https://www.npmjs.com/package/fix-mod-date).
+
+`npm install -g fix-mod-date`
 
 # use
 
@@ -48,9 +48,12 @@ Node.JS >= 10
 
 # develop
 
-## install dependencies
+## setup
 
-`npm install`
+- `git clone https://github.com/didrip/fix-mod-date && cd fix-mod-date`
+- `npm install`
+- `npm run build`
+- `npm link`
 
 ## live changes
 
