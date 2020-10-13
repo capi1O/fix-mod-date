@@ -12,6 +12,7 @@ chai.use(chai.should);
 const command = 'fix-mod-date';
 const version = pjson.version;
 const filePath = 'test/samples/file';
+const dirPath = 'test/samples';
 
 describe('command line arguments tests', () => {
 
@@ -91,6 +92,22 @@ describe('read modification time tests', () => {
 		res.stdout.should.be.equal(`unsupported file type '.txt' for file ${process.cwd()}/test/samples/file.txt\n`);
 		res.stderr.should.be.empty;
 	});
+
+	it('should read directory modification time', async () => {
+
+		const dirAbsFilePath = path.resolve(process.cwd(), dirPath);
+
+		// 1. set dummy modification on the file which have no timestamp in content
+		await utimes(`${dirAbsFilePath}/file.txt`, { mtime: 971445607000 });
+
+		// 2. execute command
+		const res = chaiExec(`${command} -t -r 1 ${dirPath}`);
+
+		// 3. check result. should be time of TIFF file
+		const stdoutLastLine = res.stdout.split('\n').slice(-2,-1)[0];
+		stdoutLastLine.should.be.equal(`dir ${process.cwd()}/${dirPath} timestamp => '1603200592000'`);
+		res.stderr.should.be.empty;
+	});
 });
 
 
@@ -132,6 +149,25 @@ describe('update modification time tests', () => {
 
 		// 4. check result
 		updatedTime.should.be.equal(1602498298000);
+		res.stderr.should.be.empty;
+	});
+
+	it('should update directory modification time', async () => {
+
+		const dirAbsFilePath = path.resolve(process.cwd(), dirPath);
+
+		// 1. set dummy modification on the file which have no timestamp in content
+		await utimes(`${dirAbsFilePath}/file.txt`, { mtime: 971445607000 });
+
+		// 2. execute command
+		const res = chaiExec(`${command} -q -r 1 ${dirPath}`);
+
+		// 3. read the modification date
+		const dirStats = await fs.promises.stat(dirAbsFilePath);
+		const updatedTime = dirStats.mtimeMs; // dirStats?.mtimeMs;
+
+		// 4. check result. should be time of TIFF file
+		updatedTime.should.be.equal(1603200592000);
 		res.stderr.should.be.empty;
 	});
 });
