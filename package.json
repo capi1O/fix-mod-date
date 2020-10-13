@@ -2,7 +2,7 @@
   "name": "fix-mod-date",
   "version": "1.0.0",
   "bin": "./dist/index.js",
-  "description": "",
+  "description": "read & update modification date of various file types",
   "main": "./dist/index.js",
   "scripts": {
     "dev": "webpack --mode=development --watch --progress",
@@ -22,7 +22,7 @@
     "/dist"
   ],
   "keywords": [],
-  "author": "didrip",
+  "author": "didrip <npm.mouthable@simplelogin.co>",
   "license": "ISC",
   "dependencies": {
     "exifreader": "^3.12.2",
@@ -47,5 +47,5 @@
     "webpack": "^5.0.0-rc.4",
     "webpack-cli": "^3.3.12"
   },
-  "type": "module"
+	"type": "module"
 }

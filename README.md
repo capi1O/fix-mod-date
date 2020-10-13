@@ -1,6 +1,6 @@
-# description
+# fix-mod-date [![NPM package version](https://img.shields.io/npm/v/fix-mod-date.svg?style=flat-square)](https://www.npmjs.com/package/fix-mod-date) [![NPM downloads](https://img.shields.io/npm/dm/fix-mod-date.svg?style=flat-square)](https://www.npmjs.com/package/fix-mod-date) [![HitCount](http://hits.dwyl.io/didrip/fix-mod-date.svg)](http://hits.dwyl.io/didrip/fix-mod-date)  [![codecov.io](https://img.shields.io/codecov/c/github/didrip/fix-mod-date/master.svg?style=flat-square)](http://codecov.io/github/didrip/fix-mod-date?branch=master)
 
-`fix-mod-date` is a CLI tool which fixes the modification date of various file types by reading their contents. Of course it does not work with any file because the date must be saved in the file somehow.
+`fix-mod-date` is a CLI tool which reads & updates the modification date of various file types by parsing their contents. Of course it does not work with any file because the date must be saved in the file somehow.
 
 The directories modification times will then match the modification time of the latest file it contains. (it is not updated directly by `fix-mod-date`, this is managed by filesystem)
 
