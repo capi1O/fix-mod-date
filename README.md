@@ -2,7 +2,7 @@
 
 `fix-mod-date` is a CLI tool which fixes the modification date of various file types by reading their contents. Of course it does not work with any file because the date must be saved in the file somehow.
 
-It also updates directories modification time based on the modification dates of the file it contains.
+The directories modification times will then match the modification time of the latest file it contains. (it is not updated directly by `fix-mod-date`, this is managed by filesystem)
 
 *It can happen that the modification date of a file is incorrect for various reasons, ex. if a file has been copied without preserving modification dates, such as when it is moved from one filesystem to another.*
 
