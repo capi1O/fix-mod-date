@@ -77,7 +77,7 @@ describe('read modification time tests', () => {
 
 	it('should read correct TIFF file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.tiff`);
-		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.tiff timestamp is '1603200592000'\n`);
+		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.tiff timestamp is '1594819792000'\n`);
 		res.stderr.should.be.empty;
 	});
 
@@ -105,7 +105,7 @@ describe('read modification time tests', () => {
 
 		// 3. check result. should be time of TIFF file
 		const stdoutLastLine = res.stdout.split('\n').slice(-2,-1)[0];
-		stdoutLastLine.should.be.equal(`dir ${process.cwd()}/${dirPath} timestamp => '1603200592000'`);
+		stdoutLastLine.should.be.equal(`dir ${process.cwd()}/${dirPath} timestamp => '1601641681000'`);
 		res.stderr.should.be.empty;
 	});
 });
@@ -167,7 +167,7 @@ describe('update modification time tests', () => {
 		const updatedTime = dirStats.mtimeMs; // dirStats?.mtimeMs;
 
 		// 4. check result. should be time of TIFF file
-		updatedTime.should.be.equal(1603200592000);
+		updatedTime.should.be.equal(1601641681000);
 		res.stderr.should.be.empty;
 	});
 });
