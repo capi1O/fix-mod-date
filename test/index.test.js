@@ -21,12 +21,14 @@ describe('command line arguments tests', () => {
 		const res = chaiExec(`${command} --version`);
 		res.stdout.should.equal(`v${version}\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should be quiet', () => {
 
 		const res = chaiExec(`${command} -q ${filePath}.pdf`);
 		res.stdout.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 });
 
@@ -37,60 +39,70 @@ describe('read modification time tests', () => {
 		const res = chaiExec(`${command} -t ${filePath}.pdf`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.pdf timestamp is '1408471627000'\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should read correct AI file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.ai`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.ai timestamp is '1487143617000'\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should read correct PSD file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.psd`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.psd timestamp is '1512476036000'\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should read correct EPS file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.eps`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.eps timestamp is '1303077332000'\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should read correct AEP file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.aep`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.aep timestamp is '1601641681000'\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should read correct MP4 file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.mp4`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.mp4 timestamp is '1438938782000'\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should read correct JPG file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.jpg`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.jpg timestamp is '1205608713000'\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should read correct TIFF file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.tiff`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.tiff timestamp is '1594826992000'\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should read correct ZIP file modification time', () => {
 		const res = chaiExec(`${command} -t ${filePath}.zip`);
 		res.stdout.should.be.equal(`file ${process.cwd()}/test/samples/file.zip timestamp is '1588703262000'\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should not support unknown file', () => {
 		const res = chaiExec(`${command} -t ${filePath}.txt`);
 		res.stdout.should.be.equal(`unsupported file type '.txt' for file ${process.cwd()}/test/samples/file.txt\n`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	it('should read directory modification time', async () => {
@@ -107,6 +119,7 @@ describe('read modification time tests', () => {
 		const stdoutLastLine = res.stdout.split('\n').slice(-2,-1)[0];
 		stdoutLastLine.should.be.equal(`dir ${process.cwd()}/${dirPath} timestamp => '1601641681000'`);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 });
 
@@ -130,6 +143,7 @@ describe('update modification time tests', () => {
 		// 4. check result
 		updatedTime.should.be.equal(1408471627000);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	
@@ -150,6 +164,7 @@ describe('update modification time tests', () => {
 		// 4. check result
 		updatedTime.should.be.equal(1602498298000);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 
 	xit('should update directory modification time', async () => {
@@ -169,5 +184,6 @@ describe('update modification time tests', () => {
 		// 4. check result. should be time of AEP file
 		updatedTime.should.be.equal(1601641681000);
 		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
 	});
 });
