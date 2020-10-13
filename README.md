@@ -1,4 +1,4 @@
-# fix-mod-date [![NPM package version](https://img.shields.io/npm/v/fix-mod-date.svg?style=flat-square)](https://www.npmjs.com/package/fix-mod-date) [![NPM downloads](https://img.shields.io/npm/dm/fix-mod-date.svg?style=flat-square)](https://www.npmjs.com/package/fix-mod-date) [![HitCount](http://hits.dwyl.io/didrip/fix-mod-date.svg)](http://hits.dwyl.io/didrip/fix-mod-date)  [![codecov.io](https://img.shields.io/codecov/c/github/didrip/fix-mod-date/master.svg?style=flat-square)](http://codecov.io/github/didrip/fix-mod-date?branch=master)
+# fix-mod-date [![NPM package version](https://img.shields.io/npm/v/fix-mod-date.svg?style=flat-square)](https://www.npmjs.com/package/fix-mod-date) [![NPM downloads](https://img.shields.io/npm/dm/fix-mod-date.svg?style=flat-square)](https://www.npmjs.com/package/fix-mod-date) [![Build Status](https://travis-ci.com/didrip/fix-mod-date.svg?branch=master)](https://travis-ci.com/didrip/fix-mod-date)  [![codecov.io](https://img.shields.io/codecov/c/github/didrip/fix-mod-date/master.svg?style=flat-square)](http://codecov.io/github/didrip/fix-mod-date?branch=master)
 
 `fix-mod-date` is a CLI tool which reads & updates the modification date of various file types by parsing their contents. Of course it does not work with any file because the date must be saved in the file somehow.
 
@@ -29,7 +29,6 @@ Node.JS >= 10
 - `v` or `--verbose`: verbose logging.
 - `q` or `--quiet`: no output at all.
 - `r` or `--recursive`: recursive level for processing directories. default = `1`;
-- `f` or `--only-files`: files mode. do not modify directories time.
 
 # supported file types
 
