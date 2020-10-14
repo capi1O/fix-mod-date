@@ -68,6 +68,7 @@ Node.JS >= 10
 - [exifreader](https://github.com/mattiasw/ExifReader)
 - [moment](https://github.com/moment/moment)
 - [utimes](https://github.com/baileyherbert/utimes)
+- [minimist](https://github.com/substack/minimist)
 
 
 ## toolchain [![devDependencies Status](https://david-dm.org/didrip/fix-mod-date/dev-status.svg?style=flat-square)](https://david-dm.org/didrip/fix-mod-date?type=dev)
