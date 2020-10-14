@@ -4,7 +4,7 @@
 
 The directories modification times will then match the modification time of the latest file it contains. (it is not updated directly by `fix-mod-date`, this is managed by filesystem)
 
-*It can happen that the modification date of a file is incorrect for various reasons, ex. if a file has been copied without preserving modification dates, such as when it is moved from one filesystem to another.*
+*It can happen that the modification date of a file is incorrect for various reasons, ex. if a file has been copied without preserving modification date, such as when it is moved from one filesystem to another.*
 
 # compatibilty
 
@@ -28,7 +28,8 @@ Node.JS >= 10
 - `t` or `--test`: test mode. date will not be modified.
 - `v` or `--verbose`: verbose logging.
 - `q` or `--quiet`: no output at all.
-- `r` or `--recursive`: recursive level for processing directories. default = `1`;
+- `r` or `--recursive`: recursive level for processing directories. default = `1`
+- `i` or `--ignore`: file names to ignore. default = [] but OS files .DS_Store, .Spotlight-V100, .Trashes, ehthumbs.db and Thumbs.db are ignored by default.
 
 # supported file types
 

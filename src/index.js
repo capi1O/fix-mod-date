@@ -93,7 +93,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 };
 
 
-const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel, verbose, test, quiet) => {
+const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel, ignoredFiles, verbose, test, quiet) => {
 
 	if (verbose) console.log(`processing [${names.join(',')}]`);
 
@@ -109,27 +109,34 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 			// 1. check if argument is correct
 			if (typeof absolutePath !== 'string' && !(absolutePath instanceof String)) { console.error('invalid path'); process.exit(1); }
 
-			// 2. process file or directory
-			const stat = await fs.promises.lstat(absolutePath);
-			if (stat.isDirectory()) {
-				if (recurseLevel < maxRecurseLevel) {
-					const subNames = await fs.promises.readdir(absolutePath);
-					const dirTimestamp = await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, verbose, test, quiet);
-					if (dirTimestamp && dirTimestamp > timestamp) timestamp = dirTimestamp;
-
-					// 2A. read dir timestamp
-					if (!test) {
-						// directory date is modified by OS when files times are modified
-						if (!quiet) console.log(`modified dir ${absolutePath} timestamp => '${dirTimestamp}'`);
-					}
-					else console.log(`dir ${absolutePath} timestamp => '${dirTimestamp}'`);
-				}
-				else if (verbose) console.log(`maximum recurse level '${maxRecurseLevel}' reached`);
+			// 2. skip system files
+			if (ignoredFiles.includes(path.basename(name))) {
+				if (!quiet) console.log(`skipping file '${name}'`);
 			}
+
+			// 3. process file or directory
 			else {
-				// 2B. update file timestamp
-				const fileTimestamp = await processFile(absolutePath, verbose, test, quiet);
-				if (fileTimestamp && fileTimestamp > timestamp) timestamp = fileTimestamp;
+				const stat = await fs.promises.lstat(absolutePath);
+				if (stat.isDirectory()) {
+					if (recurseLevel < maxRecurseLevel) {
+						const subNames = await fs.promises.readdir(absolutePath);
+						const dirTimestamp = await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, ignoredFiles, verbose, test, quiet);
+						if (dirTimestamp && dirTimestamp > timestamp) timestamp = dirTimestamp;
+
+						// 3A. read dir timestamp
+						if (!test) {
+							// directory date is modified by OS when files times are modified
+							if (!quiet) console.log(`modified dir ${absolutePath} timestamp => '${dirTimestamp}'`);
+						}
+						else console.log(`dir ${absolutePath} timestamp => '${dirTimestamp}'`);
+					}
+					else if (verbose) console.log(`maximum recurse level '${maxRecurseLevel}' reached`);
+				}
+				else {
+					// 3B. update file timestamp
+					const fileTimestamp = await processFile(absolutePath, verbose, test, quiet);
+					if (fileTimestamp && fileTimestamp > timestamp) timestamp = fileTimestamp;
+				}
 			}
 		}
 		catch (error) {
@@ -140,18 +147,33 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 	return timestamp !== 0 ? timestamp : null;
 }
 
+const systemFiles = [
+	'.DS_Store',
+	// '.DS_Store?',
+	// '._*',
+	'.Spotlight-V100',
+	'.Trashes',
+	'ehthumbs.db',
+	'Thumbs.db'
+];
+
 // main
 const argsOptions = {
 	boolean: ['v', 't', 'q', 'version', 'd'],
-	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level' },
-	default: { r: 1, v: false, t: false, q: false }
+	string: ['i'],
+	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level', i: 'ignore' },
+	default: { r: 1, v: false, t: false, q: false, i: [] }
 };
 const { _: names, ...args } = parseArgs(process.argv.slice(2), argsOptions);
-const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version } = args;
+const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version, i: ignore } = args;
+
+let ignoredFiles;
+if (Array.isArray(ignore)) ignoredFiles = ignore;
+else ignoredFiles = [ignore]; // in case only one argument is provided minimist default to string. see issue https://github.com/substack/minimist/issues/136
 
 if (version) console.log(`v${pjson.version}`);
 if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
 
-if (names.length > 0) await processPaths(process.cwd(), names, 0, maxRecurseLevel, verbose, test, quiet);
+if (names.length > 0) await processPaths(process.cwd(), names, 0, maxRecurseLevel, [...ignoredFiles, ...systemFiles], verbose, test, quiet);
 
 process.exit(0);

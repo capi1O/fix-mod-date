@@ -105,6 +105,20 @@ describe('read modification time tests', () => {
 		res.should.exit.with.code(0);
 	});
 
+	it('should not read system files', () => {
+		const res = chaiExec(`${command} -t test/samples/.DS_Store`);
+		res.stdout.should.be.equal(`skipping file 'test/samples/.DS_Store'\n`);
+		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
+	});
+
+	it('should not read ignored files', () => {
+		const res = chaiExec(`${command} -t test/samples/ignore.psd -i ignore.psd`);
+		res.stdout.should.be.equal(`skipping file 'test/samples/ignore.psd'\n`);
+		res.stderr.should.be.empty;
+		res.should.exit.with.code(0);
+	});
+
 	it('should read directory modification time', async () => {
 
 		const dirAbsFilePath = path.resolve(process.cwd(), dirPath);
