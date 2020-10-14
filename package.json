@@ -1,6 +1,6 @@
 {
   "name": "fix-mod-date",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "bin": "./dist/index.js",
   "description": "read & update modification date of various file types",
   "main": "./dist/index.js",
