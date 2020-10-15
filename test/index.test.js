@@ -195,15 +195,15 @@ describe('update modification time tests', () => {
 		res.should.exit.with.code(0);
 	});
 
-	xit('should update directory modification time', async () => {
+	it('should update directory modification time', async () => {
 
 		const dirAbsFilePath = path.resolve(process.cwd(), dirPath);
 
-		// 1. set dummy modification on the file which have no timestamp in content
-		await utimes(`${dirAbsFilePath}/file.txt`, { mtime: 971445607000 });
+		// // 1. set dummy modification on the file which have no timestamp in content
+		// await utimes(`${dirAbsFilePath}/file.txt`, { mtime: 971445607000 });
 
 		// 2. execute command
-		const res = chaiExec(`${command} -q -r 1 ${dirPath}`);
+		const res = chaiExec(`${command} -q -d -r 1 ${dirPath}`);
 
 		// 3. read the modification date
 		const dirStats = await fs.promises.stat(dirAbsFilePath);

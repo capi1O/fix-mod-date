@@ -8,6 +8,8 @@ import zxmp from './zip-adobe-xmp.js';
 import mp4 from './mp4.js';
 import zip from './zip.js';
 import pjson from '../package.json';
+import moment from 'moment';
+const { execSync } = require('child_process');
 import utimesModule from 'utimes';
 const { utimes } = utimesModule;
 
@@ -110,7 +112,7 @@ const processFile = async (absFilePath, fallback, verbose, test, quiet) => {
 };
 
 
-const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel, ignoredFiles, fallback, verbose, test, quiet) => {
+const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel, ignoredFiles, updateDirectories, fallback, verbose, test, quiet) => {
 
 	if (verbose) console.log(`processing [${names.join(',')}]`);
 
@@ -136,13 +138,38 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 				const stat = await fs.promises.lstat(absolutePath);
 				if (stat.isDirectory()) {
 					if (recurseLevel < maxRecurseLevel) {
-						const subNames = await fs.promises.readdir(absolutePath);
-						const dirTimestamp = await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, ignoredFiles, fallback, verbose, test, quiet);
-						if (dirTimestamp && dirTimestamp > timestamp) timestamp = dirTimestamp;
 
-						// 3A. read dir timestamp
-						if (!test) {
-							// directory date is modified by OS when files times are modified
+						// 3.A 1. compute directory modification time
+						const subNames = await fs.promises.readdir(absolutePath);
+						const dirTimestamp = await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, ignoredFiles, updateDirectories, fallback, verbose, test, quiet);
+						if (dirTimestamp && dirTimestamp > timestamp) timestamp = dirTimestamp;
+						if (verbose) console.log(`dir ${absolutePath} timestamp is '${dirTimestamp}'`);
+
+						// 3.A 2. update dir timestamp
+						if (!test && updateDirectories) {
+							const mom = moment.unix(dirTimestamp / 1000);
+							// let result;
+							switch (process.platform) {
+
+								// nix
+								case 'aix':
+								case 'darwin':
+								case 'freebsd':
+								case 'linux':
+								case 'openbsd':
+								case 'sunos':
+									execSync(`touch ${absolutePath} -t ${mom.format('YYYYMMDDHHmm.ss')}`);
+									break;
+
+								// win
+								case 'win32':
+									execSync(`(Get-Item "${absolutePath}").LastWriteTime=("${mom.format('DD MMMM YYYY HH:mm:ss')}")`, { shell: 'powershell.exe' });
+									break;
+
+								default:
+									console.error(`unsupported platform ${process.platform}`);
+									break;
+							}
 							if (!quiet) console.log(`modified dir ${absolutePath} timestamp => '${dirTimestamp}'`);
 						}
 						else console.log(`dir ${absolutePath} timestamp => '${dirTimestamp}'`);
@@ -150,7 +177,7 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 					else if (verbose) console.log(`maximum recurse level '${maxRecurseLevel}' reached`);
 				}
 				else {
-					// 3B. update file timestamp
+					// 3.B. read or update file timestamp
 					const fileTimestamp = await processFile(absolutePath, fallback, verbose, test, quiet);
 					if (fileTimestamp && fileTimestamp > timestamp) timestamp = fileTimestamp;
 				}
@@ -178,11 +205,20 @@ const systemFiles = [
 const argsOptions = {
 	boolean: ['v', 't', 'q', 'version', 'd', 'f'],
 	string: ['i'],
-	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level', i: 'ignore', f: 'fallback' },
-	default: { r: 1, v: false, t: false, q: false, i: [], f: false }
+	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level', i: 'ignore', d: 'directory', f: 'fallback' },
+	default: { r: 1, v: false, t: false, q: false, i: [], d: false, f: false }
 };
 const { _: names, ...args } = parseArgs(process.argv.slice(2), argsOptions);
-const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version, i: ignore, f: fallback } = args;
+const {
+	r: maxRecurseLevel,
+	v: verbose,
+	t: test,
+	q: quiet,
+	version,
+	i: ignore,
+	d: updateDirectories,
+	f: fallback
+} = args;
 
 let ignoredFiles;
 if (Array.isArray(ignore)) ignoredFiles = ignore;
@@ -191,6 +227,6 @@ else ignoredFiles = [ignore]; // in case only one argument is provided minimist 
 if (version) console.log(`v${pjson.version}`);
 if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
 
-if (names.length > 0) await processPaths(process.cwd(), names, 0, maxRecurseLevel, [...ignoredFiles, ...systemFiles], fallback, verbose, test, quiet);
+if (names.length > 0) await processPaths(process.cwd(), names, 0, maxRecurseLevel, [...ignoredFiles, ...systemFiles], updateDirectories, fallback, verbose, test, quiet);
 
 process.exit(0);

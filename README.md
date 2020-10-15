@@ -2,13 +2,13 @@
 
 `fix-mod-date` is a CLI tool which reads & updates the modification date of various file types by parsing their contents. Of course it does not work with any file because the date must be saved in the file somehow.
 
-The directories modification times will then match the modification time of the latest file it contains. (it is not updated directly by `fix-mod-date`, this is managed by filesystem)
+`fix-mod-date` can also be used on directories to update their modification times based on the latest file it contains.
 
 *It can happen that the modification date of a file is incorrect for various reasons, ex. if a file has been copied without preserving modification date, such as when it is moved from one filesystem to another.*
 
 # compatibilty
 
-Node.JS >= 10
+Node.JS >= 10 and PowerShell on Windows (since Windows Server 2008 & Windows 7)
 
 *Note: run `export NODE_NO_WARNINGS=1` before `fix-mod-date` to avoid fs.promises API ExperimentalWarning on Node 10.x.*
 
@@ -31,6 +31,7 @@ Node.JS >= 10
 - `r` or `--recursive`: recursive level for processing directories. default = `1`
 - `i` or `--ignore`: file names to ignore. default = [] but OS files .DS_Store, .Spotlight-V100, .Trashes, ehthumbs.db and Thumbs.db are ignored by default.
 - `f` or `--fallback`: use file OS modification time if time not found in file contents.
+- `d` or `--directory`: update the directories modification time based on the files it contains.
 
 # supported file types
 
