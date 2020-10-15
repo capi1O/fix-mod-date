@@ -12,7 +12,7 @@ import utimesModule from 'utimes';
 const { utimes } = utimesModule;
 
 
-const processFile = async (absFilePath, verbose, test, quiet) => {
+const processFile = async (absFilePath, fallback, verbose, test, quiet) => {
 	const extension = path.extname(absFilePath).toLowerCase();
 
 	// 0. check if path exists
@@ -26,6 +26,7 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 
 	// 2. get file timestamp
 	let timestamp;
+	let supported = true;
 	switch (extension) {
 		case '.pdf':
 			if (verbose) console.log(`processing PDF file ${absFilePath}`);
@@ -72,28 +73,44 @@ const processFile = async (absFilePath, verbose, test, quiet) => {
 
 		default:
 			if (!quiet) console.log(`unsupported file type '${extension}' for file ${absFilePath}`);
+			supported = false;
 			break;
 	}
 
 	// 3. fallback to file system modification date (file timestamp required for parent dir)
-	if (!timestamp) {
-		if (verbose) console.log(`could not find timestamp for file ${absFilePath}`);
-		const fileStats = await fs.promises.stat(absFilePath);
-		return fileStats?.mtimeMs;
+	if (timestamp == null) {
+		if (fallback) {
+			if (!quiet) console.log(`could not find timestamp in content for file ${absFilePath}, reading OS timestamp`);
+			const fileStats = await fs.promises.stat(absFilePath);
+			return fileStats?.mtimeMs;
+		}
+		else {
+			if (supported) {
+				if (!quiet) console.log(`could not find timestamp in content for file ${absFilePath}, skipping`);
+			}
+		}
 	}
 
-	// 4. modify file time
-	if (verbose || test) console.log(`file ${absFilePath} timestamp is '${timestamp}'`);
-	if (!test) {
-		await utimes(absFilePath, { mtime: timestamp });
-		if (!quiet) console.log(`modified file ${absFilePath} timestamp => '${timestamp}'`);
+	if (timestamp != null) {
+		// 4.A output timestamp (test mode)
+		if (test) {
+			if (supported || fallback) console.log(`file ${absFilePath} timestamp is '${timestamp}'`);
+		}
+
+		// 4.B modify file time (write mode)
+		else {
+			if (supported) {
+				await utimes(absFilePath, { mtime: timestamp });
+				if (!quiet) console.log(`modified file ${absFilePath} timestamp => '${timestamp}'`);
+			}
+		}
 	}
 
 	return timestamp;
 };
 
 
-const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel, ignoredFiles, verbose, test, quiet) => {
+const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel, ignoredFiles, fallback, verbose, test, quiet) => {
 
 	if (verbose) console.log(`processing [${names.join(',')}]`);
 
@@ -120,7 +137,7 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 				if (stat.isDirectory()) {
 					if (recurseLevel < maxRecurseLevel) {
 						const subNames = await fs.promises.readdir(absolutePath);
-						const dirTimestamp = await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, ignoredFiles, verbose, test, quiet);
+						const dirTimestamp = await processPaths(absolutePath, subNames, recurseLevel + 1, maxRecurseLevel, ignoredFiles, fallback, verbose, test, quiet);
 						if (dirTimestamp && dirTimestamp > timestamp) timestamp = dirTimestamp;
 
 						// 3A. read dir timestamp
@@ -134,7 +151,7 @@ const processPaths = async (directoryPath, names, recurseLevel, maxRecurseLevel,
 				}
 				else {
 					// 3B. update file timestamp
-					const fileTimestamp = await processFile(absolutePath, verbose, test, quiet);
+					const fileTimestamp = await processFile(absolutePath, fallback, verbose, test, quiet);
 					if (fileTimestamp && fileTimestamp > timestamp) timestamp = fileTimestamp;
 				}
 			}
@@ -159,13 +176,13 @@ const systemFiles = [
 
 // main
 const argsOptions = {
-	boolean: ['v', 't', 'q', 'version', 'd'],
+	boolean: ['v', 't', 'q', 'version', 'd', 'f'],
 	string: ['i'],
-	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level', i: 'ignore' },
-	default: { r: 1, v: false, t: false, q: false, i: [] }
+	alias: { v: 'verbose', t: 'test', q: 'quiet', r: 'recursive-level', i: 'ignore', f: 'fallback' },
+	default: { r: 1, v: false, t: false, q: false, i: [], f: false }
 };
 const { _: names, ...args } = parseArgs(process.argv.slice(2), argsOptions);
-const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version, i: ignore } = args;
+const { r: maxRecurseLevel, v: verbose, t: test, q: quiet, version, i: ignore, f: fallback } = args;
 
 let ignoredFiles;
 if (Array.isArray(ignore)) ignoredFiles = ignore;
@@ -174,6 +191,6 @@ else ignoredFiles = [ignore]; // in case only one argument is provided minimist 
 if (version) console.log(`v${pjson.version}`);
 if (verbose && test) console.log('running in test mode, no files/folder will be modifed');
 
-if (names.length > 0) await processPaths(process.cwd(), names, 0, maxRecurseLevel, [...ignoredFiles, ...systemFiles], verbose, test, quiet);
+if (names.length > 0) await processPaths(process.cwd(), names, 0, maxRecurseLevel, [...ignoredFiles, ...systemFiles], fallback, verbose, test, quiet);
 
 process.exit(0);

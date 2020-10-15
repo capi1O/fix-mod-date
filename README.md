@@ -30,6 +30,7 @@ Node.JS >= 10
 - `q` or `--quiet`: no output at all.
 - `r` or `--recursive`: recursive level for processing directories. default = `1`
 - `i` or `--ignore`: file names to ignore. default = [] but OS files .DS_Store, .Spotlight-V100, .Trashes, ehthumbs.db and Thumbs.db are ignored by default.
+- `f` or `--fallback`: use file OS modification time if time not found in file contents.
 
 # supported file types
 
