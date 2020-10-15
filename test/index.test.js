@@ -207,7 +207,7 @@ describe('update modification time tests', () => {
 
 		// 3. read the modification date
 		const dirStats = await fs.promises.stat(dirAbsFilePath);
-		const updatedTime = dirStats.mtimeMs; // dirStats?.mtimeMs;
+		const updatedTime = Math.round(dirStats.mtimeMs); // dirStats?.mtimeMs;
 
 		// 4. check result. should be time of AEP file
 		updatedTime.should.be.equal(1601641681000);

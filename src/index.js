@@ -82,7 +82,7 @@ const processFile = async (absFilePath, fallback, verbose, test, quiet) => {
 		if (fallback) {
 			if (!quiet) console.log(`could not find timestamp in content for file ${absFilePath}, reading OS timestamp`);
 			const fileStats = await fs.promises.stat(absFilePath);
-			return fileStats?.mtimeMs;
+			return Math.round(fileStats?.mtimeMs); // some OS display ns after μseconds, ex => 1391354639546.3066
 		}
 		else {
 			if (supported) {
